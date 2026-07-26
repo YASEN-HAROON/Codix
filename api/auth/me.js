@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'DELETE') {
     await sql`DELETE FROM users WHERE id = ${userId}`;
-    clearAuthCookie(res);
+    clearAuthCookie(res, req);
     return res.status(200).json({ ok: true });
   }
 

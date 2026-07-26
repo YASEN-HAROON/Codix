@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     }
 
     const token = signToken(user.id);
-    setAuthCookie(res, token);
+    setAuthCookie(res, token, req);
 
     res.status(200).json({ id: user.id, fullName: user.full_name, email: user.email, displayName: user.display_name });
   } catch (err) {

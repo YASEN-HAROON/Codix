@@ -48,7 +48,7 @@ export default async function handler(req, res) {
     `;
 
     const token = signToken(userId);
-    setAuthCookie(res, token);
+    setAuthCookie(res, token, req);
 
     res.status(201).json({ id: userId, fullName: fullName.trim(), email: normalizedEmail, displayName, avatarLetter });
   } catch (err) {

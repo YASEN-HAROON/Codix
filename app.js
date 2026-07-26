@@ -59,13 +59,26 @@
     });
   }
 
-  // Ensures the visitor is logged in; redirects to login if not.
-  // Returns the current user object, or null (and redirects) if unauthenticated.
+  // Ensures the visitor is logged in; redirects to login only on a real
+  // "not authenticated" (401) response. Any other failure (server error,
+  // database not configured, etc.) is shown on-page instead of silently
+  // bouncing back to the login screen.
   async function requireSession() {
     try {
       return await api('/api/auth/me');
-    } catch {
-      window.location.href = 'index.html';
+    } catch (err) {
+      if (err.status === 401) {
+        window.location.href = 'index.html';
+        return null;
+      }
+      document.body.innerHTML = `
+        <div style="max-width:520px;margin:80px auto;padding:24px;
+          background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);
+          color:#fca5a5;border-radius:12px;font-family:sans-serif;line-height:1.6;">
+          <strong>Couldn't load your session.</strong><br>
+          ${escapeHtml(err.message)}<br><br>
+          <a href="index.html" style="color:#fca5a5;">Back to login</a>
+        </div>`;
       return null;
     }
   }
